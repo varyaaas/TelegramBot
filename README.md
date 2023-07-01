@@ -11,6 +11,6 @@ Telegram bot for making polls and quiz.
 
 'Cancel' - to cancel any of the commands.
 
-#How to use this bot on your own computer?
+# How to use this bot on your own computer?
 1. To clone this repo
 2. To write your own token: API_TOKEN = ' '
