@@ -1,7 +1,7 @@
 import logging
 from aiogram import Bot, Dispatcher, executor, types
 
-API_TOKEN = '6268794756:AAGEfBZj9bEPxgL_3kCJk2GJcwhVzt-qtnw'
+API_TOKEN = 'YOUR TOKEN'
 
 bot = Bot(token=API_TOKEN)
 dp = Dispatcher(bot)
@@ -18,8 +18,7 @@ async def send_welcome(message: types.Message):
         ]
     ]
     keyboard = types.ReplyKeyboardMarkup(keyboard=kb, resize_keyboard=True)
-    await message.reply('Hello!\nI am a polling bot!\nI can make polls in telegram.', reply_markup=keyboard) #Так как код работает 
-асинхронно, то обязательно пишем await.
+    await message.reply('Hello!\nI am a polling bot!\nI can make polls in telegram.', reply_markup=keyboard) 
  
 # Handler to a command /help
 @dp.message_handler(commands=["help"])
