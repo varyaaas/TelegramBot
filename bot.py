@@ -20,12 +20,16 @@ class State:
 
 user_state = {}
 
+qw_dict = {}
+ans_dict = {}
+type_dict = {}
+
 def set_state(user_id: int, state: int):
    user_state[user_id] = state
 
 def get_user_state(user_id: int):
    if not user_id in user_state:
-      user_state[user_id] = State.QUIZ
+      user_state[user_id] = State.QUESTION
    return user_state[user_id]
 
 # Handler to a command /start
@@ -86,44 +90,41 @@ async def poll(message: types.Message):
    user_id = message.from_user.id
    await message.answer("Send me your question:")
    set_state(user_id, State.QUESTION)
-   print(f'current state = {get_user_state(user_id)}')
 
 
-@dp.message_handler()
 async def question_parse(message: types.Message):
    user_id = message.from_user.id
-   qw_text = message.text
+   qw_dict[user_id] = message.text
    await message.answer("Send me your answers. Use ';' as a separator.")
    set_state(user_id, State.ANSWERS)
-   print(f'text = {qw_text}, current state = {get_user_state(user_id)}')
 
 
-@dp.message_handler()
 async def answers_parse(message: types.Message):
    user_id = message.from_user.id
-   ans_text = message.text
+   ans_dict[user_id] = message.text
    await message.answer("Do you want to have an anonymous poll? Send 'YES' or 'NO'.")
    set_state(user_id, State.POLL_TYPE)
-   print(f'text = {ans_text}, current state = {get_user_state(user_id)}')
-  
-@dp.message_handler()
+
+
 async def type_parse(message: types.Message):
    user_id = message.from_user.id
    type_text = message.text
    if type_text == 'YES':
-      tp = True
+      type_dict[user_id] = True
    else:
-      tp = False
+      type_dict[user_id] = False
+   await message.answer(f'Let me see if I have understood you right?\nQuestion: {qw_dict[user_id]}.\nAnswers: {ans_dict[user_id]}. Is anonymous: {type_dict[user_id]}.\nAnswer me "YES" or "NO"')
    set_state(user_id, State.POLL)
 
 
-@dp.message_handler()
 async def sending_poll(message: types.Message):
-   await bot.send_poll(chat_id=message.from_user.id, 
-                       question=qw_text,                     
-                       options=ans_text.split(sep=';'),                     
-                       type='poll',                     
-                       is_anonymous=tp)
+   user_id = message.from_user.id
+   await bot.send_poll(chat_id=user_id, 
+                       question=qw_dict[user_id],                     
+                       options=ans_dict[user_id].split(sep=';'),                     
+                       type='regular',                     
+                       is_anonymous=type_dict[user_id])
+
 
 
 @dp.message_handler()
