@@ -12,11 +12,10 @@ quizzes_database = {}
 
 # States declaration
 class State:
-   QUIZ = 0
-   QUESTION = 1
-   ANSWERS = 2
-   TYPE = 3
-   POLL = 4
+   QUESTION = 0
+   ANSWERS = 1
+   POLL_TYPE = 2
+   POLL = 3
 
 
 user_state = {}
@@ -85,27 +84,27 @@ async def action_cancel(message: types.Message):
 @dp.message_handler(commands=["poll"]) 
 async def poll(message: types.Message):
    user_id = message.from_user.id
-   set_state(user_id, State.QUESTION)
    await message.answer("Send me your question:")
-
+   set_state(user_id, State.QUESTION)
+   print(f'current state = {get_user_state(user_id)}')
 
 
 @dp.message_handler()
 async def question_parse(message: types.Message):
    user_id = message.from_user.id
    qw_text = message.text
-   set_state(user_id, State.ANSWERS)
    await message.answer("Send me your answers. Use ';' as a separator.")
+   set_state(user_id, State.ANSWERS)
+   print(f'text = {qw_text}, current state = {get_user_state(user_id)}')
 
 
 @dp.message_handler()
 async def answers_parse(message: types.Message):
-   await message.answer("Do you want to have an anonymous poll? Send 'YES' or 'NO'.")
    user_id = message.from_user.id
    ans_text = message.text
-   ans = ans_text.split(';')
-   set_state(user_id, State.TYPE)
    await message.answer("Do you want to have an anonymous poll? Send 'YES' or 'NO'.")
+   set_state(user_id, State.POLL_TYPE)
+   print(f'text = {ans_text}, current state = {get_user_state(user_id)}')
   
 @dp.message_handler()
 async def type_parse(message: types.Message):
@@ -122,7 +121,7 @@ async def type_parse(message: types.Message):
 async def sending_poll(message: types.Message):
    await bot.send_poll(chat_id=message.from_user.id, 
                        question=qw_text,                     
-                       options=ans,                     
+                       options=ans_text.split(sep=';'),                     
                        type='poll',                     
                        is_anonymous=tp)
 
@@ -134,7 +133,7 @@ async def text_handler(message: types.Message):
       await question_parse(message)
    elif get_user_state(user_id) == State.ANSWERS:
       await answers_parse(message)
-   elif get_user_state(user_id) == State.TYPE:
+   elif get_user_state(user_id) == State.POLL_TYPE:
       await type_parse(message)
    elif get_user_state(user_id) == State.POLL: 
       await sending_poll(message)
