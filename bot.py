@@ -2,7 +2,6 @@ from credentials import TOKEN
 
 import logging
 from aiogram import Bot, Dispatcher, executor, types
-# from quiz import Quiz
 
 
 bot = Bot(token=TOKEN)
@@ -85,6 +84,7 @@ async def action_cancel(message: types.Message):
    await message.answer("The action is canceled. Enter the command to start over.", reply_markup=remove_keyboard)
 
 
+# Handler to a command /poll
 @dp.message_handler(commands=["poll"]) 
 async def poll(message: types.Message):
    user_id = message.from_user.id
@@ -95,14 +95,14 @@ async def poll(message: types.Message):
 async def question_parse(message: types.Message):
    user_id = message.from_user.id
    qw_dict[user_id] = message.text
-   await message.answer("Send me your answers. Use ';' as a separator.")
+   await message.answer("Send me your answers. Use ';' as a separator please.")
    set_state(user_id, State.ANSWERS)
 
 
 async def answers_parse(message: types.Message):
    user_id = message.from_user.id
    ans_dict[user_id] = message.text
-   await message.answer("Do you want to have an anonymous poll? Send 'YES' or 'NO'.")
+   await message.answer('Do you want to have an anonymous poll?\nSend "YES" or "NO".')
    set_state(user_id, State.POLL_TYPE)
 
 
@@ -113,13 +113,15 @@ async def type_parse(message: types.Message):
       type_dict[user_id] = True
    else:
       type_dict[user_id] = False
-   await message.answer(f'Let me see if I have understood you right?\nQuestion: {qw_dict[user_id]}.\nAnswers: {ans_dict[user_id]}. Is anonymous: {type_dict[user_id]}.\nAnswer me "YES" or "NO"')
+   await message.answer(f'Let me see if I have understood you right:\nYour question: {qw_dict[user_id]}\nAnswers: {ans_dict[user_id]}.\nIs anonymous: {type_dict[user_id]}.\nAnswer me "YES" if everything is correct or "NO" if you want to correct something.')
    set_state(user_id, State.POLL)
 
 
 async def sending_poll(message: types.Message):
+   type_text = message.text
    user_id = message.from_user.id
-   await bot.send_poll(chat_id=user_id, 
+   if type_text == 'YES':
+      await bot.send_poll(chat_id=user_id, 
                        question=qw_dict[user_id],                     
                        options=ans_dict[user_id].split(sep=';'),                     
                        type='regular',                     
@@ -140,27 +142,6 @@ async def text_handler(message: types.Message):
       await sending_poll(message)
    else:
       await message.answer("Something got wrong :(")
-
-
-
- #   qw = '',
- #   opt = []
- #   qw = message.text
-
- #    quizzes_database[str(message.from_user.id)].append(Quiz(
- #        question=qw
- #        options=opt,
- #        correct_option_id=message.poll.correct_option_id,
- #        owner_id=message.from_user.id)
- #    )
-
-
-
- # quizzes_database[str(message.from_user.id)].append(Quiz(
- #        question=qw_text,
- #        options=[],
- #        owner_id=user_id)
- #    )
 
 
 if __name__ == '__main__':
