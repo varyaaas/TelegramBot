@@ -15,6 +15,7 @@ class State:
    ANSWERS = 1
    POLL_TYPE = 2
    POLL = 3
+   POLL_ERROR = 4
 
 
 user_state = {}
@@ -116,7 +117,6 @@ async def type_parse(message: types.Message):
    await message.answer(f'Let me see if I have understood you right:\nYour question: {qw_dict[user_id]}\nAnswers: {ans_dict[user_id]}.\nIs anonymous: {type_dict[user_id]}.\nAnswer me "YES" if everything is correct or "NO" if you want to correct something.')
    set_state(user_id, State.POLL)
 
-
 async def sending_poll(message: types.Message):
    type_text = message.text
    user_id = message.from_user.id
@@ -126,6 +126,15 @@ async def sending_poll(message: types.Message):
                        options=ans_dict[user_id].split(sep=';'),                     
                        type='regular',                     
                        is_anonymous=type_dict[user_id])
+   if type_text == 'NO':
+      set_state(user_id, State.POLL_ERROR)
+
+async def poll_error(message: types.Message):
+   user_id = message.from_user.id
+   await message.answer(f"Let's start from the beggining. Send me your question.")
+   set_state(user_id, State.QUESTION) 
+
+
 
 
 
@@ -140,6 +149,8 @@ async def text_handler(message: types.Message):
       await type_parse(message)
    elif get_user_state(user_id) == State.POLL: 
       await sending_poll(message)
+   elif get_user_state(user_id) == State.POLL_ERROR:
+      await poll_error(message)
    else:
       await message.answer("Something got wrong :(")
 
