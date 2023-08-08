@@ -102,40 +102,44 @@ async def question_parse(message: types.Message):
 
 async def answers_parse(message: types.Message):
    user_id = message.from_user.id
-   ans_dict[user_id] = message.text
-   await message.answer('Do you want to have an anonymous poll?\nSend "YES" or "NO".')
-   set_state(user_id, State.POLL_TYPE)
+   if ';' in message.text:
+      ans_dict[user_id] = message.text
+      await message.answer('Do you want to have an anonymous poll?\nSend "YES" or "NO".')
+      set_state(user_id, State.POLL_TYPE)
+   else:
+      poll_keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
+      poll_keyboard.add(types.KeyboardButton(text="/poll"))
+      poll_keyboard.add(types.KeyboardButton(text="Cancel"))
+      await message.reply('Sorry, wrong format. Start again, please.', reply_markup=poll_keyboard)
+
+
 
 
 async def type_parse(message: types.Message):
    user_id = message.from_user.id
    type_text = message.text
-   if type_text == 'YES':
+   if type_text == 'YES' or type_text == 'Yes' or type_text == 'yes':
       type_dict[user_id] = True
    else:
       type_dict[user_id] = False
    await message.answer(f'Let me see if I have understood you right:\nYour question: {qw_dict[user_id]}\nAnswers: {ans_dict[user_id]}.\nIs anonymous: {type_dict[user_id]}.\nAnswer me "YES" if everything is correct or "NO" if you want to correct something.')
    set_state(user_id, State.POLL)
 
+
 async def sending_poll(message: types.Message):
    type_text = message.text
    user_id = message.from_user.id
-   if type_text == 'YES':
+   if type_text == 'YES' or type_text == 'Yes' or type_text == 'yes':
       await bot.send_poll(chat_id=user_id, 
                        question=qw_dict[user_id],                     
                        options=ans_dict[user_id].split(sep=';'),                     
                        type='regular',                     
                        is_anonymous=type_dict[user_id])
-   if type_text == 'NO':
-      set_state(user_id, State.POLL_ERROR)
-
-async def poll_error(message: types.Message):
-   user_id = message.from_user.id
-   await message.answer(f"Let's start from the beggining. Send me your question.")
-   set_state(user_id, State.QUESTION) 
-
-
-
+   elif type_text == 'NO' or type_text == 'No' or type_text == 'no':
+      user_id = message.from_user.id
+      await message.answer(f"Let's start from the beggining. Send me your question.")
+      set_state(user_id, State.QUESTION) 
+    
 
 
 @dp.message_handler()
@@ -149,8 +153,6 @@ async def text_handler(message: types.Message):
       await type_parse(message)
    elif get_user_state(user_id) == State.POLL: 
       await sending_poll(message)
-   elif get_user_state(user_id) == State.POLL_ERROR:
-      await poll_error(message)
    else:
       await message.answer("Something got wrong :(")
 
