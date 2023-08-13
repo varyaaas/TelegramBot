@@ -3,6 +3,8 @@ from credentials import TOKEN
 import logging
 from aiogram import Bot, Dispatcher, executor, types
 
+from messages import help_message, start_message, quiz_message
+
 
 bot = Bot(token=TOKEN)
 dp = Dispatcher(bot)
@@ -48,8 +50,7 @@ async def send_welcome(message: types.Message):
    start_keyboard.add(types.KeyboardButton(text='/poll'))
    start_keyboard.add(types.KeyboardButton(text='/quiz'))
 
-   await message.reply('Hello!\nI am a polling bot!\nI can make polls and quizes in telegram.\nUse a /help command to see what I can do.', reply_markup=start_keyboard) 
- 
+   await message.reply(start_message, reply_markup=start_keyboard) 
 
 # Handler to a command /help
 @dp.message_handler(commands=["help"])
@@ -58,8 +59,7 @@ async def help_func(message: types.Message):
    help_keyboard.add(types.KeyboardButton(text="/fast_quiz"))
    help_keyboard.add(types.KeyboardButton(text="/fast_poll"))
    help_keyboard.add(types.KeyboardButton(text="Cancel"))
-   await message.answer("""I am able to make quizes and polls.\n\nTo make a fast quiz use /fast_quiz command.
-                         \nTo make a fast poll use /fast_poll command.""", reply_markup=help_keyboard)
+   await message.answer( reply_markup=help_keyboard)
 
 
 # Handler to a command /fast_quiz
@@ -125,7 +125,13 @@ async def type_parse(message: types.Message):
       type_dict[user_id] = True
    else:
       type_dict[user_id] = False
-   await message.answer(f'Let me see if I have understood you right:\nYour question: {qw_dict[user_id]}\nAnswers: {ans_dict[user_id]}.\nIs anonymous: {type_dict[user_id]}.\nAnswer me "YES" if everything is correct or "NO" if you want to correct something.')
+   await message.answer(f'''
+   Let me see if I have understood you right:
+Your question: {qw_dict[user_id]}
+Answers: {ans_dict[user_id]}.
+Is anonymous: {type_dict[user_id]}.
+Answer me "YES" if everything is correct or "NO" if you want to correct something.
+                        ''')
    set_state(user_id, State.POLL)
 
 
@@ -186,7 +192,14 @@ async def correct_ans_parse(message: types.Message):
    user_id = message.from_user.id
    type_text = message.text
    cor_ans_dict[user_id] = type_text
-   await message.answer(f'Let me see if I have understood you right:\nYour question: {qw_dict[user_id]}\nAnswers: {ans_dict[user_id]}.\nIs anonymous: {type_dict[user_id]}.\nCorrect answer: {cor_ans_dict[user_id]}.\nAnswer me "YES" if everything is correct or "NO" if you want to correct something.')
+   await message.answer(f'''
+      Let me see if I have understood you right:
+Your question: {qw_dict[user_id]}
+Answers: {ans_dict[user_id]}.
+Is anonymous: {type_dict[user_id]}.
+Correct answer: {cor_ans_dict[user_id]}.
+Answer me "YES" if everything is correct or "NO" if you want to correct something.
+      ''')
    set_state(user_id, State.QUIZ)
 
 

@@ -1,0 +1,32 @@
+
+start_message = '''
+
+Hello!
+
+I am a polling bot!
+I can make polls and quizes in telegram.
+Use a /help command to see what I can do.
+
+'''
+ 
+help_message = '''
+ 
+I am able to make quizes and polls.
+
+/start - to start this bot
+/help - to give some help
+/fast_quiz - to make a fast quiz using a special button
+/fast_poll - to make a fast poll using a special button
+/quiz - to make a quiz using bot
+/poll - to make a poll using bot
+
+
+'''
+
+quiz_message = '''
+Let me see if I have understood you right:
+Your question: {qw_dict[user_id]}
+Answers: {ans_dict[user_id]}.
+Is anonymous: {type_dict[user_id]}.
+Answer me "YES" if everything is correct or "NO" if you want to correct something.
+'''
