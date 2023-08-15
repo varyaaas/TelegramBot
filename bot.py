@@ -3,7 +3,7 @@ from credentials import TOKEN
 import logging
 from aiogram import Bot, Dispatcher, executor, types
 
-from messages import help_message, start_message, quiz_message
+from messages import help_message, start_message, quiz_message, poll_message
 
 
 bot = Bot(token=TOKEN)
@@ -117,7 +117,6 @@ async def answers_parse(message: types.Message):
       await message.reply('Sorry, wrong format. Start again, please.', reply_markup=poll_keyboard)
 
 
-
 async def type_parse(message: types.Message):
    user_id = message.from_user.id
    type_text = message.text
@@ -125,13 +124,7 @@ async def type_parse(message: types.Message):
       type_dict[user_id] = True
    else:
       type_dict[user_id] = False
-   await message.answer(f'''
-   Let me see if I have understood you right:
-Your question: {qw_dict[user_id]}
-Answers: {ans_dict[user_id]}.
-Is anonymous: {type_dict[user_id]}.
-Answer me "YES" if everything is correct or "NO" if you want to correct something.
-                        ''')
+   await message.answer(poll_message.format(qw_dict[user_id], ans_dict[user_id], type_dict[user_id]))
    set_state(user_id, State.POLL)
 
 
@@ -185,21 +178,14 @@ async def type_parse_quiz(message: types.Message):
       type_dict[user_id] = True
    else:
       type_dict[user_id] = False
-   await message.answer('Send me a correct answer, please.')
+   await message.answer('Send me an index of a correct answer (starting from 0), please.')   
    set_state(user_id, State.CORRECT_ANS)
 
 async def correct_ans_parse(message: types.Message):
    user_id = message.from_user.id
    type_text = message.text
    cor_ans_dict[user_id] = type_text
-   await message.answer(f'''
-      Let me see if I have understood you right:
-Your question: {qw_dict[user_id]}
-Answers: {ans_dict[user_id]}.
-Is anonymous: {type_dict[user_id]}.
-Correct answer: {cor_ans_dict[user_id]}.
-Answer me "YES" if everything is correct or "NO" if you want to correct something.
-      ''')
+   await message.answer(quiz_message.format(qw_dict[user_id], ans_dict[user_id], type_dict[user_id], cor_ans_dict[user_id]))
    set_state(user_id, State.QUIZ)
 
 
@@ -211,7 +197,7 @@ async def sending_quiz(message: types.Message):
                        question=qw_dict[user_id],                     
                        options=ans_dict[user_id].split(sep=';'),                     
                        type='quiz',
-                       correct_option_id = ans_dict[user_id].split(sep=';').index(cor_ans_dict[user_id]),                     
+                       correct_option_id = cor_ans_dict[user_id],                     
                        is_anonymous = type_dict[user_id])
    elif type_text == 'NO' or type_text == 'No' or type_text == 'no':
       user_id = message.from_user.id

@@ -23,10 +23,24 @@ I am able to make quizes and polls.
 
 '''
 
-quiz_message = '''
+poll_message = '''
+
 Let me see if I have understood you right:
-Your question: {qw_dict[user_id]}
-Answers: {ans_dict[user_id]}.
-Is anonymous: {type_dict[user_id]}.
+Your question: {}
+Answers: {}.
+Is anonymous: {}.
 Answer me "YES" if everything is correct or "NO" if you want to correct something.
-'''
+                        '''
+
+quiz_message = '''
+
+Let me see if I have understood you right:
+
+Your question: {}
+Answers: {}.
+Is anonymous: {}.
+Correct answer index: {}.
+
+Answer me "YES" if everything is correct or "NO" if you want to correct something.
+
+      '''
