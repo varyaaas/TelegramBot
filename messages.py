@@ -20,6 +20,7 @@ I am able to make quizes and polls.
 /quiz - to make a quiz using bot
 /poll - to make a poll using bot
 
+You can type "Cancel" any time to stop action.
 
 '''
 

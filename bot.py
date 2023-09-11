@@ -43,7 +43,7 @@ def get_user_state(user_id: int):
 # Handler to a command /start
 @dp.message_handler(commands=['start']) 
 async def send_welcome(message: types.Message):
-   start_keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
+   start_keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
    start_keyboard.add(types.KeyboardButton(text='/fast_quiz'))
    start_keyboard.add(types.KeyboardButton(text='/fast_poll'))
    start_keyboard.add(types.KeyboardButton(text='/help'))
@@ -55,11 +55,13 @@ async def send_welcome(message: types.Message):
 # Handler to a command /help
 @dp.message_handler(commands=["help"])
 async def help_func(message: types.Message):
-   help_keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
+   help_keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
    help_keyboard.add(types.KeyboardButton(text="/fast_quiz"))
    help_keyboard.add(types.KeyboardButton(text="/fast_poll"))
+   help_keyboard.add(types.KeyboardButton(text='/poll'))
+   help_keyboard.add(types.KeyboardButton(text='/quiz'))
    help_keyboard.add(types.KeyboardButton(text="Cancel"))
-   await message.answer( reply_markup=help_keyboard)
+   await message.answer(help_message, reply_markup=help_keyboard)
 
 
 # Handler to a command /fast_quiz
