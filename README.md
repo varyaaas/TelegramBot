@@ -17,5 +17,5 @@ Telegram bot for making polls and quiz.
 
 # How to use this bot on your own computer?
 1. To clone this repo
-2. Get TOKEN in [@BotFather](@BotFather)
+2. Get TOKEN in [@BotFather](https://t.me/BotFather)
 3. Write your own token in bot.py: TOKEN = " "
