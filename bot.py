@@ -67,7 +67,7 @@ async def help_func(message: types.Message):
 # Handler to a command /fast_quiz
 @dp.message_handler(commands=["fast_quiz"])
 async def fast_qz(message: types.Message):
-   qz_keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
+   qz_keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
    qz_keyboard.add(types.KeyboardButton(text="Create a quiz",
                                            request_poll=types.KeyboardButtonPollType(type=types.PollType.QUIZ)))
    qz_keyboard.add(types.KeyboardButton(text="Cancel"))
@@ -77,7 +77,7 @@ async def fast_qz(message: types.Message):
 # Handler to a command /fast_poll
 @dp.message_handler(commands=["fast_poll"])
 async def fast_poll(message: types.Message):
-   poll_keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
+   poll_keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
    poll_keyboard.add(types.KeyboardButton(text="Create a poll",
                                            request_poll=types.KeyboardButtonPollType(type='regular')))
    poll_keyboard.add(types.KeyboardButton(text="Cancel"))
