@@ -55,7 +55,7 @@ async def send_welcome(message: types.Message):
 # Handler to a command /help
 @dp.message_handler(commands=["help"])
 async def help_func(message: types.Message):
-   help_keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
+   help_keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True, is_persistent=True)
    help_keyboard.add(types.KeyboardButton(text="/fast_quiz"))
    help_keyboard.add(types.KeyboardButton(text="/fast_poll"))
    help_keyboard.add(types.KeyboardButton(text='/poll'))
@@ -90,6 +90,11 @@ async def action_cancel(message: types.Message):
    remove_keyboard = types.ReplyKeyboardRemove()
    await message.answer("The action is canceled. Enter the command to start over.", reply_markup=remove_keyboard)
 
+# Handler to a text message "cancel"
+@dp.message_handler(lambda message: message.text == "cancel")
+async def action_cancel(message: types.Message):
+   remove_keyboard = types.ReplyKeyboardRemove()
+   await message.answer("The action is canceled. Enter the command to start over.", reply_markup=remove_keyboard)
 
 # Handler to a command /poll
 @dp.message_handler(commands=["poll"]) 
