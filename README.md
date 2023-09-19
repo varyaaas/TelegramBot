@@ -1,17 +1,17 @@
 # Poll bot
-Telegram bot for making polls and quiz.
+Telegram bot for making polls and quizes.
 
-/start - command to start a bot.
+* /start - command to start a bot.
 
-/help - to read a short manual about comands and abilities of this bot.
+* /help - to read a short manual about comands and abilities of this bot.
 
-/fast_quiz - to make a fast quiz in the dialog window.
+* /fast_quiz - to make a fast quiz in the dialog window.
 
-/fast_poll - to make a fast poll in the dialog window.
+* /fast_poll - to make a fast poll in the dialog window.
 
-/quiz - to make a quiz using bot
+* /quiz - to make a quiz using bot
 
-/poll - to make a poll using bot
+* /poll - to make a poll using bot
 
 "Cancel" or "cancel" - to cancel any of the commands.
 
